@@ -1,0 +1,92 @@
+{% extends 'core/base.html' %}
+{% load static %}
+<title> {% block title %} Assets {% endblock %}</title>
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/assets.css' %}">
+{% include 'core/header.html' %}
+<script src="https://kit.fontawesome.com/157e6a580a.js" crossorigin="anonymous"></script>
+<div class="container">
+    <center>
+        <h1 class="text">Cadastrar Ativos</h1>
+
+        <form method="get" action="{% url 'assets' %}" id="search-form" class="center">
+            <input type="text" name="query" id="search-input" placeholder="pesquisar ativo" class="searchbar-class">
+            <button type="submit" class="search-button"><i class="fas fa-search" style="font-size: 24px;"></i></button>
+        </form>
+
+        <div id="suggestions-container" class="center"></div>
+        <div class="box center">
+            {% if data %}
+                {% for stock in data.stocks %}
+                    {% if stock.stock == request.GET.query %}
+                    <div class="image-text">
+                            <img src="{{ stock.logo }}" alt="{{ stock.name }} Logo" class="logo-asset">
+                        <div class="name-asset">
+                            <h1 style="font-size: 50px;">{{ stock.stock }}</h1>
+                            <h3>{{ stock.name }}</h3>
+                            
+                        </div>
+                    </div>
+                    <div class="period-form">
+                        <form style='display:flex; flex-direction: column; align-items: center; gap:3px'>
+                            <label for="period-dropdown">Periodicidade:</label>
+                                <select class="period-dropdown" name="period">
+                                    <option value="1m">Um minuto</option>
+                                    <option value="2m">Dois minutos</option>
+                                    <option value="5m">Cinco minutos</option>
+                                    <option value="15m">Quinze minutos</option>
+                                    <option value="30m">Trinta minutos</option>
+                                    <option value="60m">Sessenta minutos</option>
+                                    <option value="90m">Noventa minutos</option>
+                                </select>
+                        </form>
+                        <button type="button" class="confirm-button">Cadastrar</button>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>           
+    </center>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#search-input').on('input', function () {
+                var query = $(this).val();
+
+                $.ajax({
+                    url: '{% url "get-suggestions" %}',
+                    data: { 'query': query },
+                    dataType: 'json',
+                    success: function (data) {
+                        var suggestionsContainer = $('#suggestions-container');
+                        suggestionsContainer.empty();
+
+                        if (data.data) {
+                            data.data.stocks.forEach(function (stock) {
+                                var suggestionItem = $('<div class="suggestion-item">' +
+                                '<img src="' + stock.logo + '" alt="' + stock.name + ' Logo" width="20" height="20">' +
+                                ' ' + stock.name + ' (' + stock.stock + ')' +
+                                '</div>');
+                                suggestionItem.click(function () {
+                                    $('#search-input').val(stock.stock);
+                                    $('#search-form').submit();
+                                    suggestionsContainer.empty();
+                                });
+
+                                suggestionsContainer.append(suggestionItem);
+                            });
+                        }
+                    }
+                });
+            });
+
+            $(document).on('click', function (event) {
+                if (!$(event.target).closest('.suggestion-item').length) {
+                    $('#suggestions-container').empty();
+                }
+            });
+        });
+    </script>
+</div>
+{% endblock %}
