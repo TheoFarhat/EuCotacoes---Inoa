@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %}
+{%load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/header.css' %}">
+<header>
+    <div class="text_logo">
+        <img src="{% static 'imgs/header-icon.png' %}" alt="EuCotações Icon" class="icon">
+        <h2 className="title">EuCotações</h2>
+    </div>
+    <nav>
+        <ul>
+            <li><a href="#">Cadastrar Cotações</a></li>
+            <li><a href="#">Perfil</a></li>
+          </ul>   
+    </nav>
+</header>
+{% endblock %} 

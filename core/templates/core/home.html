@@ -1,0 +1,13 @@
+{% extends 'core/base.html' %}
+{%load static %}
+<title> {% block title %} Home {% endblock %}</title>
+
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% include 'core/header.html' %}
+<div class="container">
+    <h1 class="text">Minhas Cotações</h1>
+    {{ api_html|safe }}
+</div>
+{% endblock %} 
