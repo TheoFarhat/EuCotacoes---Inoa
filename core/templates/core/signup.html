@@ -1,0 +1,30 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+<title>{% block title %}Cadastro{% endblock %}</title>
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/signup.css' %}">
+<div class="main-container">
+    <div class="logo-title-container">
+        <div class="title-box">
+            <img src="{% static 'imgs/header-icon.png' %}" alt="EuCotações Icon" class="logo-icon">
+            <h1 class="main-title">EuCotações</h1>
+        </div>  
+    </div>
+    <div class="content-container">
+        <div class="form-box">
+            <div class="form-content">
+                <h1 class="form-title">Cadastre-se</h1>
+                <form method="POST" class="form-position" id="registration-form">
+                    {% csrf_token %}
+                    {% crispy form %}
+                </form>
+                <div>
+                    <p>Já tenho uma conta</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

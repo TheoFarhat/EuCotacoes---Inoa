@@ -1,9 +1,36 @@
 {% extends 'core/base.html' %}
-{%load static %}
-<title> {% block title %} Login {% endblock %}</title>
-
+{% load static %}
+{% load crispy_forms_tags %}
+<title>{% block title %} Login {% endblock %}</title>
 
 {% block content %}
-{% include 'core/header.html' %}
-<h1 > Oi</h1>
-{% endblock %} 
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+<div class="container-login">
+    <div class="logo-title-login">
+        <div class="title-box-login">
+            <img src="{% static 'imgs/header-icon.png' %}" alt="EuCotações Icon" class="icon">
+            <h1 style="font-size: 40px;">EuCotações</h1>
+        </div>
+    </div>
+    <div class="content-login">
+        <div class="form-box-login">
+            <div class="form-content-login">
+                {% for message in messages %}
+                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+
+                <h1 style="font-size: 50px;">Entrar</h1>
+                <form method="POST" class="form-position-login" id="login-form">
+                    {% csrf_token %}
+                    {% crispy form %}
+                </form>
+                <div>
+                    <p style="margin-top: 50px;">Não tenho uma conta</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

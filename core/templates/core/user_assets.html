@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Assets</title>
+</head>
+<body>
+    <h1>Assets List for User {{ user_assets.0.user.name }}</h1>
+    <ul>
+        {% for asset in user_assets %}
+            <li>{{ asset.name }} - Price: ${{ asset.price }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

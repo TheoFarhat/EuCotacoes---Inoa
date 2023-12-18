@@ -1,0 +1,119 @@
+.container-login {
+    display: flex;
+    flex-direction: row;
+}
+
+
+.logo-title-login {
+    background: #eeeeee;
+    height: 100vh;
+    width: 40%;
+}
+
+.content-login {
+    background: #ffffff;
+    height: 100vh;
+    width: 60%;
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+}
+
+.title-box-login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 30%;
+}
+
+.icon {
+    height: 150px;
+    width: 150px;
+}
+
+.form-box-login {
+    background: white;
+    width: 700px;
+    border-radius: 10px;
+    border: 2px #444 solid;
+    height: 700px;
+}
+
+.form-content-login {
+    margin-top: 50px;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap:40px;
+}
+
+.forms-style-login {
+    border-radius: 7px;
+    height: 40px;
+    width: 350px;
+    padding-left: 10px;
+    background-color: #444;
+    color: #eee;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+
+}
+
+.form-position-login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.button-login {
+    background: #eee;
+    width: 180px;
+    height: 40px;
+    text-align: center;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    align-items: center;
+    border: 1px solid black;
+    font-size: 22px;
+    justify-content: center;
+    border-radius: 4px;
+    margin-top: 25px;
+    align-self: center;
+    color: black;
+    
+}
+
+.button-login:hover {
+    background-color: #444;
+    color: white;
+   
+}
+
+.names-form-login {
+    font-size: 20px;
+}
+
+
+
+
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    margin-top: 20px;
+    width: 300px;
+}
+
+.alert-success {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+
+.alert-error {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
