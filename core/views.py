@@ -2,13 +2,25 @@ from django.shortcuts import render,redirect
 import requests
 from django.http import JsonResponse
 from .models import User, Asset
-from .forms import UserForm,AssetForm, LoginForm
+from .forms import UserForm, LoginForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
+from django.core.files.base import ContentFile
+from urllib.parse import urlparse
+import os
 
 
-def home(request): 
-    return render(request, 'core/home.html')
+@login_required
+def home(request):
+    user = request.user
+    assets = user.assets.all()
+
+    context = {'user': user, 'assets': assets}
+
+    return render(request, 'core/home.html', context)
+
 
 from django.shortcuts import render
 from django.http import JsonResponse
@@ -58,29 +70,57 @@ def create_user(request):
 
 def show_users(request):
     users = User.objects.all()
-    user_data = [{'id_user': user.id_user, 'name': user.name, 'age': user.age, 'cpf': user.cpf, 'email': user.email} for user in users]
+    user_data = []
+    for user in users:
+        user_info = {
+            'id_user': user.id_user,
+            'name': user.name,
+            'age': user.age,
+            'cpf': user.cpf,
+            'email': user.email,
+            'assets': [{'id_asset': asset.id_asset, 'name': asset.name, 'price': asset.price,'image_url':asset.image.url if asset.image else None} for asset in user.assets.all()]
+        }
+        user_data.append(user_info)
+
     return JsonResponse({'users': user_data})
 
+
+@login_required
+@require_POST
 def create_asset(request):
-    if request.method == 'POST':
-        form = AssetForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return JsonResponse({'status': 'success'})
-        else:
-            return JsonResponse({'status': 'error', 'errors': form.errors}, status=400)
-    else:
-        return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+    user = request.user
 
-def show_assets(request):
-    assets = Asset.objects.all()
-    asset_data = [{'id_asset': asset.id_asset, 'name': asset.name, 'price': asset.price, 'price_tunel': asset.price_tunel, 'period': asset.period} for asset in assets]
-    return JsonResponse({'assets': asset_data})
+    stock = request.POST.get('stock')
+    period = request.POST.get('period')
 
-def user_assets_list(request, user_id):
-    user = User.object.get(id_user= user_id)
-    user_assets = user.assets.all()
-    return render(request, 'user_assets.html', {'user_assets': user_assets})
+    api_url = f'https://brapi.dev/api/quote/{stock}?interval={period}&token=8rDXEbmSajqBqWekoG1rTh'
+    api_response = requests.get(api_url)
+    api_data = api_response.json()
+    print(api_data)
+
+    asset_name = api_data['results'][0]['shortName']
+    asset_symbol = api_data['results'][0]['symbol']
+    asset_price = api_data['results'][0]['regularMarketPrice']
+    asset_price_tunel = api_data['results'][0]['regularMarketVolume']
+
+    image_url = api_data['results'][0]['logourl']
+    image_filename = os.path.basename(urlparse(image_url).path)
+
+
+    asset = Asset(
+        name=asset_name,
+        symbol = asset_symbol,
+        price=asset_price,
+        price_tunel=asset_price_tunel,
+        period=period,
+    )
+    asset.save()
+
+    asset.image.save(image_filename, ContentFile(requests.get(image_url).content), save=True)
+    user.assets.add(asset)
+
+    return redirect('home') 
+
 
 def user_login(request):
     if request.method == 'POST':

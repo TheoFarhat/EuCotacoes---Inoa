@@ -4,11 +4,16 @@
     <title>User Assets</title>
 </head>
 <body>
-    <h1>Assets List for User {{ user_assets.0.user.name }}</h1>
-    <ul>
-        {% for asset in user_assets %}
-            <li>{{ asset.name }} - Price: ${{ asset.price }}</li>
-        {% endfor %}
-    </ul>
+    <h1>Assets List for User {{ user.name }}</h1>
+
+    {% if assets %}
+        <ul>
+            {% for asset in assets %}
+                <li>{{ asset.image }} Stock: {{ asset.symbol }} - Name: {{ asset.name }} - Price: ${{ asset.price }} - Period: {{ asset.period }} </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No assets found for this user.</p>
+    {% endif %}
 </body>
 </html>

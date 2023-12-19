@@ -40,8 +40,3 @@ class LoginForm(AuthenticationForm):
         self.fields['username'].widget.attrs['class'] = 'forms-style-login'
         self.fields['password'].widget.attrs['class'] = 'forms-style-login'
 
-
-class AssetForm(forms.ModelForm):
-    class Meta:
-        model = Asset
-        fields = '__all__'

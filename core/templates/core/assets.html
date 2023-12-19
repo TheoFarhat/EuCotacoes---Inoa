@@ -8,7 +8,7 @@
 <script src="https://kit.fontawesome.com/157e6a580a.js" crossorigin="anonymous"></script>
 <div class="container">
     <center>
-        <h1 class="text">Cadastrar Ativos</h1>
+        <h1 class="text-assets">Cadastrar Ativos</h1>
 
         <form method="get" action="{% url 'assets' %}" id="search-form" class="center">
             <input type="text" name="query" id="search-input" placeholder="pesquisar ativo" class="searchbar-class">
@@ -29,20 +29,22 @@
                         </div>
                     </div>
                     <div class="period-form">
-                        <form style='display:flex; flex-direction: column; align-items: center; gap:3px'>
+                        <form method="POST" action="{% url 'create_asset' %}" id="create-asset-form" style="display:flex; flex-direction: column; align-items: center; gap:3px">
+                            {% csrf_token %}
                             <label for="period-dropdown">Periodicidade:</label>
-                                <select class="period-dropdown" name="period">
-                                    <option value="1m">Um minuto</option>
-                                    <option value="2m">Dois minutos</option>
-                                    <option value="5m">Cinco minutos</option>
-                                    <option value="15m">Quinze minutos</option>
-                                    <option value="30m">Trinta minutos</option>
-                                    <option value="60m">Sessenta minutos</option>
-                                    <option value="90m">Noventa minutos</option>
-                                </select>
+                            <select class="period-dropdown" name="period">
+                                <option value="1m">Um minuto</option>
+                                <option value="2m">Dois minutos</option>
+                                <option value="5m">Cinco minutos</option>
+                                <option value="15m">Quinze minutos</option>
+                                <option value="30m">Trinta minutos</option>
+                                <option value="60m">Sessenta minutos</option>
+                                <option value="90m">Noventa minutos</option>
+                            </select>
+                            <input type="hidden" name="stock" value="{{ stock.stock }}">
+                            <button type="submit" class="confirm-button">Cadastrar</button>
                         </form>
-                        <button type="button" class="confirm-button">Cadastrar</button>
-                    </div>
+                    </div>                    
                     {% endif %}
                 {% endfor %}
             {% endif %}

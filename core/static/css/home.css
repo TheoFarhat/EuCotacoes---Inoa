@@ -7,8 +7,27 @@
 }
 
 .text {
-    margin-top: 20px; 
+    margin-top: 50px; 
     font-size: 45px;
-    
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 50px; 
+    justify-content: center; 
+}
+
+.asset-box {
+    background: rgb(248, 248, 248);
+    height: 320px;
+    width: 700px; 
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row; 
+    border: 2px #eeeeee solid;
+    align-items: center;
+    justify-content: center;
+    padding: 20px; 
 }
 

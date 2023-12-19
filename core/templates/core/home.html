@@ -8,6 +8,15 @@
 {% include 'core/header.html' %}
 <div class="container">
     <h1 class="text">Meus Ativos</h1>
-    
+    {% if assets %}
+        <div class="content">
+            {% for asset in assets %}
+                <ul class="asset-box">
+                    <img src="{{ asset.image.url }}" alt="{{ asset.name }} Logo" style="height: 200px; width: 200px; border-radius: 7px;">
+                    <li>Stock: {{ asset.symbol }} - Name: {{ asset.name }} - Price: ${{ asset.price }} - Period: {{ asset.period }} </li>
+                </ul>
+            {% endfor %}
+        </div>
+    {% endif %}
 </div>
 {% endblock %} 

@@ -31,6 +31,9 @@ class User(AbstractBaseUser):
 class Asset(models.Model):
     id_asset = models.AutoField(primary_key=True)
     name = models.TextField(max_length=50)
+    symbol = models.TextField(max_length=50)
     price = models.FloatField()
     price_tunel = models.FloatField()
     period = models.TextField()
+    image = models.ImageField(upload_to='asset_images/', null=True, blank=True)
+    user_has_assets = models.ManyToManyField(User, related_name='user_assets_asset')
