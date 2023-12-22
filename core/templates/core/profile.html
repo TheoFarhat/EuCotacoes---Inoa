@@ -1,0 +1,28 @@
+{% extends 'core/base.html' %}
+{% load static %}
+<title>{% block title %} Perfil {% endblock %}</title>
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% include 'core/header.html' %}
+<div class="container">
+    <img src="{% static 'imgs/profile-icon.png' %}" alt="EuCotações Profile" class="profile-icon">
+    <div class='text-box'>
+        <div class="info-box">
+            <p> Nome:</p>
+            <p> {{user.name}}</p>
+        </div>    
+        <div class="info-box">
+            <p> Email:</p>
+            <p> {{user.email}}</p>
+        </div>
+        <div class="info-box">
+            <p> Idade:</p>
+            <p> {{user.age}}</p>
+        </div>
+        <div class="info-box">
+            <p> CPF:</p>
+            <p> {{user.cpf}}</p>
+        </div>
+</div>
+{% endblock %}

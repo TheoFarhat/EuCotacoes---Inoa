@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 import requests
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from .models import User, Asset
 from .forms import UserForm, LoginForm
 from django.contrib import messages
@@ -20,6 +20,15 @@ def home(request):
     context = {'user': user, 'assets': assets, 'user_id': user.id_user}
 
     return render(request, 'core/home.html', context)
+
+@login_required
+def profile(request):
+    user = request.user
+   
+
+    context = {'user': user}
+
+    return render(request, 'core/profile.html', context)
 
 
 from django.shortcuts import render
@@ -92,6 +101,8 @@ def create_asset(request):
 
     stock = request.POST.get('stock')
     period = request.POST.get('period')
+    lower_tunnel_price = float(request.POST.get('lower_tunnel_price'))
+    upper_tunnel_price = float(request.POST.get('upper_tunnel_price'))
 
     api_url = f'https://brapi.dev/api/quote/{stock}?interval={period}&token=8rDXEbmSajqBqWekoG1rTh'
     api_response = requests.get(api_url)
@@ -101,18 +112,21 @@ def create_asset(request):
     asset_name = api_data['results'][0]['shortName']
     asset_symbol = api_data['results'][0]['symbol']
     asset_price = api_data['results'][0]['regularMarketPrice']
-    asset_price_tunel = api_data['results'][0]['regularMarketVolume']
+    asset_previous_close = api_data['results'][0]['regularMarketPreviousClose']
 
     image_url = api_data['results'][0]['logourl']
     image_filename = os.path.basename(urlparse(image_url).path)
 
+    percentage_change = round((((asset_price - asset_previous_close) / asset_previous_close) * 100), 2)
 
     asset = Asset(
         name=asset_name,
         symbol = asset_symbol,
         price=asset_price,
-        price_tunel=asset_price_tunel,
         period=period,
+        lower_tunnel_price = lower_tunnel_price,
+        upper_tunnel_price = upper_tunnel_price,
+        percentage_change = percentage_change
     )
     asset.save()
 
@@ -146,3 +160,4 @@ def user_login(request):
         
 
     return render(request, 'core/login.html', {'form': form})
+

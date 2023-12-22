@@ -45,6 +45,14 @@
                                     <option value="90m">Noventa minutos</option>
                                 </select>
                             </div>
+                            <div class="separate">
+                                <label for="lower-tunnel-price">Túnel Inferior:</label>
+                                <input placeholder='5.60' style="padding: 2px; padding-left: 5px;"   type="text" name="lower_tunnel_price" id="lower-tunnel-price" required step="any">
+                            </div>
+                            <div class="separate">
+                                <label for="upper-tunnel-price">Túnel Superior:</label>
+                                <input placeholder='7.60' style="padding: 2px; padding-left: 5px;" type="text" name="upper_tunnel_price" id="upper-tunnel-price" required step="any">
+                            </div>
                             <input type="hidden" name="stock" value="{{ stock.stock }}">
                             <button type="submit" class="confirm-button">Cadastrar</button>
                         </form>

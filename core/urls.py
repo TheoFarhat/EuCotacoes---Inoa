@@ -7,6 +7,7 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('login/', views.user_login, name='user_login'),
     path('assets/', views.assets, name='assets'),
+    path('profile/', views.profile, name='profile'),
     path('get-suggestions/', views.get_suggestions, name='get-suggestions'),
     path('signup/', views.create_user, name='create_user'),
     path('create_asset/', views.create_asset, name='create_asset'),

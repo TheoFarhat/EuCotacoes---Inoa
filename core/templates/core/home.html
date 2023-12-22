@@ -12,12 +12,26 @@
             {% for asset in assets %}
                 <ul class="asset-box" id="asset-{{ asset.id }}">
                     <img src="{{ asset.image.url }}" alt="{{ asset.name }} Logo" style="height: 200px; width: 200px; border-radius: 7px;">
-                    <li>
-                        Stock: <span id="stock-{{ asset.id }}">{{ asset.symbol }}</span>
-                        - Name: {{ asset.name }}
-                        - Price: $<span id="price-{{ asset.id }}">{{ asset.price }}</span>
-                        - Period: <span id="period-{{ asset.id }}">{{ asset.period }}</span>
-                    </li>
+                    <div class="stock-name">
+                        <h1><span id="stock-{{ asset.id }}">{{ asset.symbol }}</span></h1>
+                        <h2>Preço: R$<span id="price-{{ asset.id }}">{{ asset.price }}</span></h2>
+                        <h3>
+                            {% if asset.percentage_change < 0  %}
+                                <span id="percentage_change-{{ asset.id }}" style='color:red'>
+                                    {{ asset.percentage_change }}%
+                                </span>
+                            {% else %}
+                                <span id="percentage_change-{{ asset.id }}" style='color:green'>
+                                    {{ asset.percentage_change }}%
+                                </span>
+                            {% endif %}
+                        </h3>
+                    </div>
+                    <div class="stock-type">
+                        <p style="font-size: 20px;">Período: <span style="font-weight: bold;" id="period-{{ asset.id }}">{{ asset.period }}</span></p>
+                        <p style="font-size: 15px;">Túnel Superior: <span style="font-weight: bold;" id="upper_tunnel_price-{{ asset.id }}">R$ {{ asset.upper_tunnel_price }}</span></p>  
+                        <p style="font-size: 15px;">Túnel Inferior: <span style="font-weight: bold;" id="lower_tunnel_price-{{ asset.id }}">R$ {{ asset.lower_tunnel_price }}</span></p>  
+                    </div>
                 </ul>
             {% endfor %}
         </div>

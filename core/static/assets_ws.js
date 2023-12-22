@@ -22,8 +22,9 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.type === 'update_asset') {
                 const assetId = data.id;
                 const assetPrice = data.price;
+                const assetPercentageChange = data.percentage_change
     
-                updateAssetPrice(assetId, assetPrice);
+                updateAssetPrice(assetId, assetPrice, assetPercentageChange);
             } else {
                 console.log('Erro na mensagem:', data.type);
             }
@@ -36,11 +37,12 @@ document.addEventListener('DOMContentLoaded', function () {
           console.log('Conexão websocket fechada:', event);
       };
 
-      function updateAssetPrice(id, price) {
+      function updateAssetPrice(id, price, percentage_change) {
         console.log(`Atualizando asset ${id} com preço ${price}`);
         const assetElement = document.getElementById('asset-' + id);
         if (assetElement) {
             assetElement.querySelector('#price-' + id).innerText = price;
+            assetElement.querySelector('#percentage_change-' + id).innerText = percentage_change;
         }
     
       }

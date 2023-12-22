@@ -47,6 +47,9 @@ class AssetConsumer(AsyncWebsocketConsumer):
             'symbol': asset.symbol,
             'price': asset.price,
             'period': asset.period,
+            'percentage_change': asset.percentage_change,
+            'lower_tunnel_price': asset.lower_tunnel_price,
+            'upper_tunnel_price': asset.upper_tunnel_price
         }))
 
     @database_sync_to_async
@@ -55,18 +58,25 @@ class AssetConsumer(AsyncWebsocketConsumer):
         api_response = requests.get(api_url)
         api_data = api_response.json()
         asset.price = api_data['results'][0]['regularMarketPrice']
+        previous_close = api_data['results'][0]['regularMarketPreviousClose']
+        asset.percentage_change = round((((asset.price - previous_close) / previous_close) * 100), 2)
         asset.save()
 
     async def update_asset(self, asset_id):
-        while True:
-            asset = await sync_to_async(Asset.objects.get)(id_asset=asset_id)
-            await self.update_asset_price(asset)
-            await self.broadcast_update(asset_id)
+        asset = await sync_to_async(Asset.objects.get)(id_asset=asset_id)
+        await self.update_asset_price(asset)
 
-            sleep_duration_seconds = int(asset.period[:-1]) * 60
-            await asyncio.sleep(sleep_duration_seconds)
+        
+    
+        asset.email_tunnel_limits(self.user)
+            
+        await self.broadcast_update(asset_id)
+
+        sleep_duration_seconds = int(asset.period[:-1]) * 60
+        await asyncio.sleep(sleep_duration_seconds)
 
     async def run_periodic_updates(self):
-        user_assets = await database_sync_to_async(list)(self.user.assets.all())
-        tasks = [self.update_asset(asset.id_asset) for asset in user_assets]
-        await asyncio.gather(*tasks)
+        while True:
+            user_assets = await database_sync_to_async(list)(self.user.assets.all())
+            tasks = [self.update_asset(asset.id_asset) for asset in user_assets]
+            await asyncio.gather(*tasks)

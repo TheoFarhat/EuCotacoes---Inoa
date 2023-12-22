@@ -1,6 +1,7 @@
 from django.db import models
 from .validators import validate_cpf, validate_email
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.core.mail import send_mail
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -33,7 +34,22 @@ class Asset(models.Model):
     name = models.TextField(max_length=50)
     symbol = models.TextField(max_length=50)
     price = models.FloatField()
-    price_tunel = models.FloatField()
+    lower_tunnel_price = models.FloatField()
+    upper_tunnel_price = models.FloatField()
+    percentage_change = models.FloatField()
     period = models.TextField()
     image = models.ImageField(upload_to='asset_images/', null=True, blank=True)
     user_has_assets = models.ManyToManyField(User, related_name='user_assets_asset')
+
+    def email_tunnel_limits(self, user):
+        if self.price < self.lower_tunnel_price:
+            subject = f'Compra Ativo {self.symbol}.'
+            message = f'Olá {user.name}, o ativo {self.symbol} ultrapassou o limite inferior do túnel, chegando ao valor {self.price}! Está na hora de comprar esse ativo.'
+            print(f"Mandando email para {user.email} - Assunto: {subject}, Mensagem: {message}")
+            send_mail(subject, message, 'eucotacoes@gmail.com', [user.email])
+
+        elif self.price > self.upper_tunnel_price:
+            subject = f'Venda  Ativo {self.symbol}.'
+            message = f'Olá {user.name}, a ação {self.name} ultrapassou o limite superior do túnel, chegando ao valor {self.price}! Está na hora de comprar esse ativo.'
+            print(f"Mandando email para {user.email} - Assunto: {subject}, Mensagem: {message}")
+            send_mail(subject, message, 'eucotacoes@gmail.com', [user.email])
