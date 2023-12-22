@@ -1,7 +1,6 @@
 {% extends 'core/base.html' %}
-{%load static %}
-<title> {% block title %} Home {% endblock %}</title>
-
+{% load static %}
+<title>{% block title %} Home {% endblock %}</title>
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
@@ -9,14 +8,24 @@
 <div class="container">
     <h1 class="text">Meus Ativos</h1>
     {% if assets %}
-        <div class="content">
+        <div class="content" id="assets-container">
             {% for asset in assets %}
-                <ul class="asset-box">
+                <ul class="asset-box" id="asset-{{ asset.id }}">
                     <img src="{{ asset.image.url }}" alt="{{ asset.name }} Logo" style="height: 200px; width: 200px; border-radius: 7px;">
-                    <li>Stock: {{ asset.symbol }} - Name: {{ asset.name }} - Price: ${{ asset.price }} - Period: {{ asset.period }} </li>
+                    <li>
+                        Stock: <span id="stock-{{ asset.id }}">{{ asset.symbol }}</span>
+                        - Name: {{ asset.name }}
+                        - Price: $<span id="price-{{ asset.id }}">{{ asset.price }}</span>
+                        - Period: <span id="period-{{ asset.id }}">{{ asset.period }}</span>
+                    </li>
                 </ul>
             {% endfor %}
         </div>
     {% endif %}
 </div>
-{% endblock %} 
+
+<div id="user-data" data-user-id="{{ user_id }}"></div>
+
+
+<script src="{% static 'assets_ws.js' %}"></script>
+{% endblock %}

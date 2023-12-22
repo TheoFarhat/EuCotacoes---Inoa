@@ -1,6 +1,6 @@
 {% extends 'core/base.html' %}
 {% load static %}
-<title> {% block title %} Assets {% endblock %}</title>
+<title> {% block title %} Ativos {% endblock %}</title>
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/assets.css' %}">
@@ -23,24 +23,28 @@
                     <div class="image-text">
                             <img src="{{ stock.logo }}" alt="{{ stock.name }} Logo" class="logo-asset">
                         <div class="name-asset">
-                            <h1 style="font-size: 50px;">{{ stock.stock }}</h1>
-                            <h3>{{ stock.name }}</h3>
-                            
+                            <div style="display: flex; align-items: center; flex-direction: column; ">
+                                <h1 style="font-size: 50px;">{{ stock.stock }}</h1>
+                                <h3>{{ stock.name }}</h3>
+                            </div>                    
+                            <h3> R$: {{ stock.close}} BRL</h3> 
                         </div>
                     </div>
                     <div class="period-form">
-                        <form method="POST" action="{% url 'create_asset' %}" id="create-asset-form" style="display:flex; flex-direction: column; align-items: center; gap:3px">
+                        <form method="POST" action="{% url 'create_asset' %}" id="create-asset-form" style="display:flex; flex-direction: column; align-items: center; gap:20px">
                             {% csrf_token %}
-                            <label for="period-dropdown">Periodicidade:</label>
-                            <select class="period-dropdown" name="period">
-                                <option value="1m">Um minuto</option>
-                                <option value="2m">Dois minutos</option>
-                                <option value="5m">Cinco minutos</option>
-                                <option value="15m">Quinze minutos</option>
-                                <option value="30m">Trinta minutos</option>
-                                <option value="60m">Sessenta minutos</option>
-                                <option value="90m">Noventa minutos</option>
-                            </select>
+                            <div class="separate">
+                                <label for="period-dropdown">Periodicidade:</label>
+                                <select class="period-dropdown" name="period">
+                                    <option value="1m">Um minuto</option>
+                                    <option value="2m">Dois minutos</option>
+                                    <option value="5m">Cinco minutos</option>
+                                    <option value="15m">Quinze minutos</option>
+                                    <option value="30m">Trinta minutos</option>
+                                    <option value="60m">Sessenta minutos</option>
+                                    <option value="90m">Noventa minutos</option>
+                                </select>
+                            </div>
                             <input type="hidden" name="stock" value="{{ stock.stock }}">
                             <button type="submit" class="confirm-button">Cadastrar</button>
                         </form>

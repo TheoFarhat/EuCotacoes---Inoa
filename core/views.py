@@ -17,7 +17,7 @@ def home(request):
     user = request.user
     assets = user.assets.all()
 
-    context = {'user': user, 'assets': assets}
+    context = {'user': user, 'assets': assets, 'user_id': user.id_user}
 
     return render(request, 'core/home.html', context)
 
@@ -120,6 +120,8 @@ def create_asset(request):
     user.assets.add(asset)
 
     return redirect('home') 
+
+
 
 
 def user_login(request):
