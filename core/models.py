@@ -44,12 +44,10 @@ class Asset(models.Model):
     def email_tunnel_limits(self, user):
         if self.price < self.lower_tunnel_price:
             subject = f'Compra Ativo {self.symbol}.'
-            message = f'Olá {user.name}, o ativo {self.symbol} ultrapassou o limite inferior do túnel, chegando ao valor {self.price}! Está na hora de comprar esse ativo.'
-            print(f"Mandando email para {user.email} - Assunto: {subject}, Mensagem: {message}")
+            message = f'Olá {user.name}, o ativo {self.symbol} ultrapassou o limite inferior de túnel, chegando ao valor {self.price}! Está na hora de comprar esse ativo.'
             send_mail(subject, message, 'eucotacoes@gmail.com', [user.email])
 
         elif self.price > self.upper_tunnel_price:
             subject = f'Venda  Ativo {self.symbol}.'
-            message = f'Olá {user.name}, a ação {self.name} ultrapassou o limite superior do túnel, chegando ao valor {self.price}! Está na hora de comprar esse ativo.'
-            print(f"Mandando email para {user.email} - Assunto: {subject}, Mensagem: {message}")
+            message = f'Olá {user.name}, a ação {self.name} ultrapassou o limite superior de túnel, chegando ao valor {self.price}! Está na hora de comprar esse ativo.'
             send_mail(subject, message, 'eucotacoes@gmail.com', [user.email])

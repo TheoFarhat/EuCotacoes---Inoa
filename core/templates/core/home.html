@@ -4,37 +4,45 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 {% include 'core/header.html' %}
 <div class="container">
     <h1 class="text">Meus Ativos</h1>
     {% if assets %}
         <div class="content" id="assets-container">
             {% for asset in assets %}
-                <ul class="asset-box" id="asset-{{ asset.id }}">
+            <ul class="asset-box" id="asset-{{ asset.id_asset }}">
                     <img src="{{ asset.image.url }}" alt="{{ asset.name }} Logo" style="height: 200px; width: 200px; border-radius: 7px;">
                     <div class="stock-name">
-                        <h1><span id="stock-{{ asset.id }}">{{ asset.symbol }}</span></h1>
-                        <h2>Preço: R$<span id="price-{{ asset.id }}">{{ asset.price }}</span></h2>
-                        <h3>
+                        <h1><span id="stock-{{ asset.id_asset }}">{{ asset.symbol }}</span></h1>
+                        <h2>Preço: R$<span id="price-{{ asset.id_asset }}">{{ asset.price }}</span></h2>
                             {% if asset.percentage_change < 0  %}
-                                <span id="percentage_change-{{ asset.id }}" style='color:red'>
-                                    {{ asset.percentage_change }}%
-                                </span>
+                                <h3 style='color:red'><span id="percentage_change-{{ asset.id_asset }}">
+                                {{ asset.percentage_change }}</span>%</h3>
+                                
                             {% else %}
-                                <span id="percentage_change-{{ asset.id }}" style='color:green'>
-                                    {{ asset.percentage_change }}%
-                                </span>
+                                <h3 style='color:green'><span id="percentage_change-{{ asset.id_asset }}">
+                                    {{ asset.percentage_change }}</span>%</h3>
                             {% endif %}
-                        </h3>
+                        {%if asset.price > asset.upper_tunnel_price %}
+                            <h2 style="font-size: 15px; align-self: center; padding-top: 10px;"> Está na hora de vender esse ativo! </h2>
+                        {% elif asset.price < asset.lower_tunnel_price %}
+                            <h2 style="font-size: 15px; align-self: center;" > Está na hora de comprar esse ativo! </h2>
+                        {% endif %}
                     </div>
                     <div class="stock-type">
-                        <p style="font-size: 20px;">Período: <span style="font-weight: bold;" id="period-{{ asset.id }}">{{ asset.period }}</span></p>
-                        <p style="font-size: 15px;">Túnel Superior: <span style="font-weight: bold;" id="upper_tunnel_price-{{ asset.id }}">R$ {{ asset.upper_tunnel_price }}</span></p>  
-                        <p style="font-size: 15px;">Túnel Inferior: <span style="font-weight: bold;" id="lower_tunnel_price-{{ asset.id }}">R$ {{ asset.lower_tunnel_price }}</span></p>  
+                        <div class="stock-type">
+                            <p style="font-size: 20px;">Período: <span style="font-weight: bold;" id="period-{{ asset.id_asset }}">{{ asset.period }}</span></p>
+                            <p style="font-size: 15px;">Túnel Superior: <span style="font-weight: bold;" id="upper_tunnel_price-{{ asset.id_asset }}">R$ {{ asset.upper_tunnel_price }}</span></p>  
+                            <p style="font-size: 15px;">Túnel Inferior: <span style="font-weight: bold;" id="lower_tunnel_price-{{ asset.id_asset }}">R$ {{ asset.lower_tunnel_price }}</span></p>  
+                        </div>
+                        <button class="button remove-asset-btn" data-asset-id="{{ asset.id_asset }}">Remover ativo</button>
                     </div>
                 </ul>
             {% endfor %}
         </div>
+    {%else %}
+        <h2 style="margin-top: 250px; font-size: 30px;"> Não há ativos cadastrados no momento!</h2>
     {% endif %}
 </div>
 
@@ -42,4 +50,29 @@
 
 
 <script src="{% static 'assets_ws.js' %}"></script>
+
+<script>
+    $(document).ready(function() {
+        $('.remove-asset-btn').on('click', function() {
+            
+            var assetId = $(this).data('asset-id');
+    
+            $.ajax({
+                type: 'POST',
+                url: '/remove_asset/',  
+                data: {
+                    'asset_id': assetId,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(data) {
+                    
+                    $('#asset-' + assetId).remove();
+                },
+                error: function(error) {
+                    console.error('Erro ao remover ativo:', error);
+                }
+            });
+        });
+    });
+    </script>
 {% endblock %}

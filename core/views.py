@@ -1,6 +1,6 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect, get_object_or_404
 import requests
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from .models import User, Asset
 from .forms import UserForm, LoginForm
 from django.contrib import messages
@@ -161,3 +161,16 @@ def user_login(request):
 
     return render(request, 'core/login.html', {'form': form})
 
+@login_required
+def remove_asset(request):
+    if request.method == 'POST':
+        asset_id = request.POST.get('asset_id')
+        csrf_token = request.POST.get('csrfmiddlewaretoken')
+
+    
+        asset = get_object_or_404(Asset, id_asset=asset_id)
+
+        asset.delete()
+        return JsonResponse({'status': 'success'})
+
+    return JsonResponse({'status': 'error', 'message': 'Método não permitido'})

@@ -7,6 +7,7 @@ from django.contrib.auth import get_user_model
 from core.models import Asset
 from channels.db import database_sync_to_async
 
+
 User = get_user_model()
 
 class AssetConsumer(AsyncWebsocketConsumer):
@@ -38,7 +39,6 @@ class AssetConsumer(AsyncWebsocketConsumer):
     async def broadcast_update(self, asset_id):
         asset = await sync_to_async(Asset.objects.get)(id_asset=asset_id)
 
-        print(f"Transmitindo update do ativo {asset_id}")
 
         await self.send(text_data=json.dumps({
             'type': 'update_asset',
@@ -62,21 +62,18 @@ class AssetConsumer(AsyncWebsocketConsumer):
         asset.percentage_change = round((((asset.price - previous_close) / previous_close) * 100), 2)
         asset.save()
 
-    async def update_asset(self, asset_id):
-        asset = await sync_to_async(Asset.objects.get)(id_asset=asset_id)
-        await self.update_asset_price(asset)
-
-        
-    
-        asset.email_tunnel_limits(self.user)
-            
-        await self.broadcast_update(asset_id)
-
-        sleep_duration_seconds = int(asset.period[:-1]) * 60
-        await asyncio.sleep(sleep_duration_seconds)
-
     async def run_periodic_updates(self):
+        user_assets = await database_sync_to_async(list)(self.user.assets.all())
+
+        for asset in user_assets:
+            asyncio.create_task(self.update_asset_periodically(asset.id_asset))
+
+    async def update_asset_periodically(self, asset_id):
         while True:
-            user_assets = await database_sync_to_async(list)(self.user.assets.all())
-            tasks = [self.update_asset(asset.id_asset) for asset in user_assets]
-            await asyncio.gather(*tasks)
+            asset = await sync_to_async(Asset.objects.get)(id_asset=asset_id)
+            await self.update_asset_price(asset)
+            asset.email_tunnel_limits(self.user)
+            await self.broadcast_update(asset_id)
+
+            sleep_duration_seconds = int(asset.period[:-1]) * 60
+            await asyncio.sleep(sleep_duration_seconds)
